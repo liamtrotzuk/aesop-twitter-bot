@@ -1,4 +1,4 @@
-  config_vars = {
+config_vars = {
     'project_id': [ENTER YOUR PROJECT ID HERE],
     'API_KEY': '[ENTER YOUR API KEY HERE]'
     'API_KEY_SECRET': '[ENTER YOUR SECRET API KEY HERE]'
