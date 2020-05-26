@@ -22,7 +22,7 @@ def execute_query(bq_client):
         bq_client: Object representing a reference to a BigQuery Client
     """
     dataset_ref = bq_client.get_dataset(bigquery.DatasetReference(
-        project=config.config_vars['project_id'],
+        project=config.config_vars['project_id']
     API_KEY = dataset_ref.table(config.config_vars['API_KEY'])
     API_KEY_SECRET = dataset_ref.table(config.config_vars['API_KEY_SECRET'])
     ACCESS_TOKEN = dataset_ref.table(config.config_vars['ACCESS_TOKEN'])
