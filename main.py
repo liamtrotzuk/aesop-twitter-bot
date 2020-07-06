@@ -20,7 +20,7 @@ api = tweepy.API(auth)
 fables = []
 list_no = 0
 for tag in soup.find_all(["h2","p"]):
-  if tag.name == "h2" and ("The" in tag.text or "the" in tag.text or "and" in tag.text) and ("ggot" not in tag.find_next_sibling("p").text):
+  if tag.name == "h2" and ("The" in tag.text or "the" in tag.text or "and" in tag.text) and "grievances" not in tag.text:
     fables.append(list_no)
     fables.append(tag)
     fables.append(tag.find_next_sibling("p"))
@@ -37,11 +37,11 @@ t = pre_t % 308
 # tweet fable
 for x in fables:
   if type(x) == int and x == t:
-    fable_name = fables[fables.index(x)+1].text
+    fable_name = "'" + fables[fables.index(x)+1].text.strip() + "'"
     api.update_status(fable_name)
     tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
     time.sleep(10)
-    fable_body_total_txt = fables[fables.index(x)+2].text.replace('\r\n','').replace('      ',' ')
+    fable_body_total_txt = re.sub('f.gg.t','bundle',fables[fables.index(x)+2].text.replace('\r\n','').replace('      ',' '))
     text = []
     text_iter = iter(text)
     for sentence in re.split(r'([."].)',fable_body_total_txt):
@@ -53,10 +53,27 @@ for x in fables:
       if len(tweet) + len(z) <= 280:
         tweet = tweet + z
       else:
-        api.update_status(tweet,tweet_id)
-        tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
-        time.sleep(10)
-        tweet = z
+        if len(tweet) > 280:
+            text_2 = []
+            text_iter_2 = iter(text_2)
+            for clause in re.split(r'(,)',tweet):
+              text_2.append(clause)
+            clean_text_2 = [f+next(text_iter_2, '') for f in text_iter_2]
+            clean_text_iter_2 = iter(clean_text_2)
+            tweet_2 = ''
+            for q in clean_text_iter_2:
+              if len(tweet_2) + len(q) <= 280:
+                tweet_2 = tweet_2 + q
+                api.update_status(tweet_2,tweet_id)
+                tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
+                time.sleep(10)
+                tweet_2 = ''
+              tweet = z    
+        else:                
+          api.update_status(tweet,tweet_id)
+          tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
+          time.sleep(10)
+          tweet = z    
     api.update_status(tweet,tweet_id)
     tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
     time.sleep(10)
