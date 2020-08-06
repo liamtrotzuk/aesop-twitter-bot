@@ -29,10 +29,10 @@ for tag in soup.find_all(["h2","p"]):
     list_no = list_no + 1
   
 # set dates
-start_date = date(2020, 5, 26)
+start_date = date(2020, 5, 24)
 date_diff_pre = date.today() - start_date
 pre_t = date_diff_pre.days
-t = pre_t % 308
+t = pre_t % 311
 
 # tweet fable
 for x in fables:
