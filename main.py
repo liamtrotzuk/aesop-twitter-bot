@@ -34,7 +34,6 @@ date_diff_pre = date.today() - start_date
 pre_t = date_diff_pre.days
 t = pre_t % 311
 
-# tweet fable
 for x in fables:
   if type(x) == int and x == t:
     fable_name = "'" + fables[fables.index(x)+1].text.strip() + "'"
@@ -47,6 +46,8 @@ for x in fables:
     for sentence in re.split(r'([."].)',fable_body_total_txt):
       text.append(sentence)
     clean_text = [y+next(text_iter, '') for y in text_iter]
+    clean_text_last = clean_text[-1]
+    clean_text_last_iter = iter(clean_text_last)
     clean_text_iter = iter(clean_text)
     tweet = ''
     for z in clean_text_iter:
@@ -70,6 +71,9 @@ for x in fables:
               tweet_2 = ''
             tweet = z    
         else:
+            api.update_status(tweet,tweet_id)
+            tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
+            time.sleep(10)
             if len(z) > 280:
               text_3 = []
               text_iter_3 = iter(text_3)
@@ -85,16 +89,15 @@ for x in fables:
                   tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
                   time.sleep(10)
                   tweet_3 = ''
-            else:
-              api.update_status(tweet,tweet_id)
-              tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
-              time.sleep(10)
         tweet = z
         if len(z) > 280:
           tweet = ''
-    api.update_status(tweet,tweet_id)
-    tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
-    time.sleep(10)
+    try:
+      ([x for x in clean_text_iter][-1]) == z
+    except IndexError:
+      api.update_status(tweet,tweet_id)
+      tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
+      time.sleep(10)
     if type(fables[fables.index(x)+3]) == int:
       break
     else:
