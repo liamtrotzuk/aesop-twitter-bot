@@ -50,54 +50,26 @@ for x in fables:
     clean_text_last_iter = iter(clean_text_last)
     clean_text_iter = iter(clean_text)
     tweet = ''
-    for z in clean_text_iter:
-      if len(tweet) + len(z) <= 280:
-        tweet = tweet + z
-      else:
-        if len(tweet) > 280:
-          text_2 = []
-          text_iter_2 = iter(text_2)
-          for clause in re.split(r'(,)',tweet):
-            text_2.append(clause)
-          clean_text_2 = [f+next(text_iter_2, '') for f in text_iter_2]
-          clean_text_iter_2 = iter(clean_text_2)
-          tweet_2 = ''
-          for q in clean_text_iter_2:
-            if len(tweet_2) + len(q) <= 280:
-              tweet_2 = tweet_2 + q
-              api.update_status(tweet_2,tweet_id)
-              tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
-              time.sleep(10)
-              tweet_2 = ''
-            tweet = z    
-        else:
-            api.update_status(tweet,tweet_id)
+    for tweet in clean_text_iter:
+      if len(tweet) > 280:
+        text_2 = []
+        text_iter_2 = iter(text_2)
+        for clause in re.split(r'(,)',tweet):
+          text_2.append(clause)
+        clean_text_2 = [f+next(text_iter_2, '') for f in text_iter_2]
+        clean_text_iter_2 = iter(clean_text_2)
+        tweet_2 = ''
+        for w in clean_text_iter_2:
+          if len(tweet_2) + len(w) <= 280:
+            tweet_2 = tweet_2 + w
+            api.update_status(tweet_2,tweet_id)
             tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
             time.sleep(10)
-            if len(z) > 280:
-              text_3 = []
-              text_iter_3 = iter(text_3)
-              for clause in re.split(r'(,)',z):
-                text_3.append(clause)
-              clean_text_3 = [f+next(text_iter_3, '') for f in text_iter_3]
-              clean_text_iter_3 = iter(clean_text_3)
-              tweet_3 = ''
-              for w in clean_text_iter_3:
-                if len(tweet_3) + len(w) <= 280:
-                  tweet_3 = tweet_3 + w
-                  api.update_status(tweet_3,tweet_id)
-                  tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
-                  time.sleep(10)
-                  tweet_3 = ''
-        tweet = z
-        if len(z) > 280:
-          tweet = ''
-    try:
-      ([x for x in clean_text_iter][-1]) == z
-    except IndexError:
-      api.update_status(tweet,tweet_id)
-      tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
-      time.sleep(10)
+            tweet_2 = ''
+      else:
+        api.update_status(tweet,tweet_id)
+        tweet_id = api.user_timeline(screen_name = 'AesopFableBot', count = 100, include_rts = False)[0].id
+        time.sleep(10)
     if type(fables[fables.index(x)+3]) == int:
       break
     else:
